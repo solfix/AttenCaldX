@@ -16,12 +16,14 @@ if __name__=='__main__':
     args = parser.parse_args()
     
     df = pd.read_table(args.in_file)
-    df = df[[args.tcr_col, args.prop_col]].sort_values(by=args.prop_col, ascending=False).iloc[:1000,:]
+    df = df[[args.tcr_col, args.prop_col]]
+    df.columns = ["aaSeqCDR3", "cloneFraction"]
+    df = df.sort_values(by="cloneFraction", ascending=False).iloc[:1000,:]
     df.reset_index(inplace=True, drop=True)
     
     if args.out_file=="":
         print("%s\t%s" % ("aaSeqCDR3", "cloneFraction"))
         for i in range(len(df)):
-            print("%s\t%f" % (df.loc[i, args.tcr_col], df.loc[i, args.prop_col]))
+            print("%s\t%f" % (df.loc[i, "aaSeqCDR3"], df.loc[i, "cloneFraction"]))
     else:
         df.to_csv(args.out_file, sep="\t", index=False)
